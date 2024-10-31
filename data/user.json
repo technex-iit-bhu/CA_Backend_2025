@@ -1,0 +1,26 @@
+{
+  "users": [
+    {
+      "_id": "64b9a2f8e4b0d2c8c7e1f945",
+      "name": "John Doe",
+      "username": "johndoe123",
+      "password": "securepassword",
+      "phone": "+1234567890",
+      "whatsapp": "+0987654321",
+      "institute": "Example University",
+      "city": "Example City",
+      "postal_code": "123456",
+      "pin_code": "654321",
+      "why_choose_you": "I am dedicated and hardworking.",
+      "is_chosen": true,
+      "were_ca": false,
+      "points": 100,
+      "year": 2024,
+      "branch": "Computer Science",
+      "referral_code": "REF123",
+      "email": "johndoe@example.com",
+      "createdAt": "2024-10-31T10:00:00Z",
+      "updatedAt": "2024-10-31T10:00:00Z"
+    }
+  ]
+}
