@@ -3,7 +3,7 @@ package utils
 import (
 	"fmt"
 	smtp "net/smtp"
-	"technexRegistration/config"
+	"CA_Backend/config"
 )
 
 func RecoveryMail(to, token string) error {

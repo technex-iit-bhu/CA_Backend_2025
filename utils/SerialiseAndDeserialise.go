@@ -2,7 +2,7 @@ package utils
 
 import (
 	"fmt"
-	"technexRegistration/config"
+	"CA_Backend/config"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
