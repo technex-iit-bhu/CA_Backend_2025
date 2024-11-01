@@ -12,7 +12,7 @@ import (
 func Route(app *fiber.App) {
 	app.Use(cors.New())
 	app.Use("/api", middleware.Protected())
-	api := app.Use("/api", logger.New())
+	api := app.Group("/api", logger.New())
 	api.Get("/", handler.Hello)
 
 	user := api.Group("/user")
