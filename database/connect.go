@@ -1,7 +1,7 @@
 package database
 
 import (
-	"CA_Backend/configs"
+	"CA_Backend/config"
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"

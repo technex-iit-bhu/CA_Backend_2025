@@ -1,9 +1,9 @@
 package utils
 
 import (
+	"CA_Backend/config"
 	"fmt"
 	smtp "net/smtp"
-	"CA_Backend/config"
 )
 
 func RecoveryMail(to, token string) error {

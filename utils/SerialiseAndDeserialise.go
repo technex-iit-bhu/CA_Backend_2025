@@ -1,16 +1,14 @@
 package utils
 
 import (
-	"fmt"
 	"CA_Backend/config"
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
 var serialKey = []byte(config.Config("JWT_SECRET"))
-var gmailKey = []byte(config.Config("GMAIL_SECRET"))
-var githubKey = []byte(config.Config("GITHUB_SECRET"))
 var recoveryKey = []byte(config.Config("RECOVERY_SECRET"))
 
 func SerialiseUser(username string) (string, error) {
@@ -34,54 +32,6 @@ func DeserialiseUser(signedToken string) (string, error) {
 	}
 	claims, _ := token.Claims.(jwt.MapClaims)
 	return claims["username"].(string), nil
-}
-
-func SerialiseGmailToken(gmail string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"gmail": gmail,
-	})
-	signedToken, err := token.SignedString(gmailKey)
-	if err != nil {
-		return "", err
-	}
-	return signedToken, nil
-}
-
-func DeserialiseGmailToken(signedToken string) (string, error) {
-	token, err := jwt.Parse(signedToken, func(token *jwt.Token) (interface{}, error) {
-		return []byte(gmailKey), nil
-	})
-
-	if err != nil {
-		return "", err
-	}
-	claims, _ := token.Claims.(jwt.MapClaims)
-
-	return claims["gmail"].(string), nil
-}
-
-func SerialiseGithubToken(github string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"github": github,
-	})
-	signedToken, err := token.SignedString(githubKey)
-	if err != nil {
-		return "", err
-	}
-	return signedToken, nil
-}
-
-func DeserialiseGithubToken(signedToken string) (string, error) {
-	token, err := jwt.Parse(signedToken, func(token *jwt.Token) (interface{}, error) {
-		return []byte(githubKey), nil
-	})
-
-	if err != nil {
-		return "", err
-	}
-	claims, _ := token.Claims.(jwt.MapClaims)
-
-	return claims["github"].(string), nil
 }
 
 func SerialiseRecovery(username string) (string, error) {

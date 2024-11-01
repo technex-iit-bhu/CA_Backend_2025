@@ -1,29 +1,42 @@
 package user
 
 import (
-	"context"
-	"github.com/gofiber/fiber/v2"
-	"go.mongodb.org/mongo-driver/bson"
 	"CA_Backend/database"
 	"CA_Backend/models"
 	"CA_Backend/utils"
+	"context"
+	"log"
+
+	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
-func GetUserFromToken(c *fiber.Ctx) error {
-	token := c.Get("Authorization")[7:]
+func GetUserProfile(c *fiber.Ctx) error {
+	ctx:=context.Background()
+	tokenString := c.Get("Authorization")
+	if len(tokenString) < 8 || tokenString[:7] != "Bearer " {
+		return c.Status(400).JSON(fiber.Map{"message": "Authorization header missing or improperly formatted"})
+	}
+	token := tokenString[7:]
+
+	
+	username, err := utils.DeserialiseUser(token)
+	if err != nil {
+		return c.Status(404).JSON(fiber.Map{"message": "Invalid or expired token"})
+	}
+	
 	db, err := database.Connect()
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"message": err.Error()})
+		log.Fatal(err.Error())
+		return c.Status(500).JSON(fiber.Map{
+			"error": err.Error(),
+			"message": "Database connection error",
+		})
 	}
-	username, err := utils.DeserialiseUser(token)
 
-	if err != nil {
-		return c.Status(404).JSON(fiber.Map{"message": "invalid token"})
-	}
-	var result models.Users
-	err = db.Collection("users").FindOne(context.Background(), bson.D{{Key: "username", Value: username}}).Decode(&result)
-	if err != nil {
-		return c.Status(404).JSON(fiber.Map{"message": "user does not exist"})
+	var result models.User
+	if err := db.Collection("users").FindOne(ctx, bson.D{{Key: "username", Value: username}}).Decode(&result); err != nil {
+		return c.Status(404).JSON(fiber.Map{"message": "User does not exist"})
 	}
 	return c.Status(200).JSON(fiber.Map{"data": result})
 }
