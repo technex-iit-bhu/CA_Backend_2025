@@ -3,6 +3,7 @@ package router
 import (
 	"CA_Backend/handler"
 	user_handler "CA_Backend/handler/users"
+	task_handler "CA_Backend/handler/tasks"
 	"CA_Backend/middleware"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -24,4 +25,7 @@ func Route(app *fiber.App) {
 	password := user.Group("/password")
 	password.Post("/recovery", user_handler.RequestPasswordRecovery)
 	password.Post("/reset", user_handler.ResetPassword)
+	
+	tasks :=api.Group("/tasks")
+	tasks.Get("/", task_handler.GetAllTasks)
 }
