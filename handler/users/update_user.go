@@ -28,7 +28,7 @@ func UpdateUserDetails(c *fiber.Ctx) error {
 		return c.Status(404).JSON(fiber.Map{"message": "User not found"})
 	}
 	
-	if user.IsReferred && user.ReferralCode != "" {
+	if user.IsReferred && updatedUser.ReferralCode != "" {
 		return c.Status(404).JSON(fiber.Map{"message": "cannot update referral code again"})
 	}
 
