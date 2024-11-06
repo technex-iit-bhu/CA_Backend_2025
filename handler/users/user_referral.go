@@ -18,7 +18,7 @@ func IncrementReferral(c *fiber.Ctx) error {
 
 	type Request struct {
 		ReferralCode string `json:"referral_code,omitempty" bson:"referral_code,omitempty" binding:"required"`
-		Username       string             `json:"username,omitempty" bson:"username,omitempty" binding:"required"`
+		Username     string `json:"username,omitempty" bson:"username,omitempty" binding:"required"`
 	}
 
 	body := new(Request)
@@ -42,17 +42,17 @@ func IncrementReferral(c *fiber.Ctx) error {
 			"message": "Failed to update referral count",
 		})
 	}
-	
+
 	currentUserFilter := bson.D{{Key: "username", Value: body.Username}}
-		updateReferred := bson.D{{Key: "$set", Value: bson.D{{Key: "is_referred", Value: true}}}}
-		_, err = db.Collection("user").UpdateOne(ctx, currentUserFilter, updateReferred)
-		if err != nil {
-			return c.Status(500).JSON(fiber.Map{
-				"error":   err.Error(),
-				"message": "Failed to set Referral status",
-			})
-		}
-	
+	updateReferred := bson.D{{Key: "$set", Value: bson.D{{Key: "is_referred", Value: true}}}}
+	_, err = db.Collection("user").UpdateOne(ctx, currentUserFilter, updateReferred)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"error":   err.Error(),
+			"message": "Failed to set Referral status",
+		})
+	}
+
 	return c.JSON(fiber.Map{
 		"message": "Referral count incremented successfully",
 		"user":    user,
