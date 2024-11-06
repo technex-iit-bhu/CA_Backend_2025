@@ -73,7 +73,7 @@ Each user-related route is nested under `/api/user` and manages user operations,
 ### **4. Set Referral**
 
 - **Method**: `PATCH`
-- **Endpoint**: `/api/user/Referral`
+- **Endpoint**: `/api/user/setReferral`
 - **Handler**: `user_handler.Referral`
 - **Description**: Increments the `referral_count` of a user based on a provided referral code while setting referral of user permanent.
 - **Request Body**:
@@ -125,7 +125,7 @@ Here’s a summary of the primary functionality of each handler for additional c
 - **`GetUserProfile`**: Validates JWT token, retrieves the user profile from the database.
 - **`CreateUser`**: Parses user data, validates fields, checks for duplicates, hashes the password, and saves a new user in the database.
 - **`LoginUser`**: Authenticates user credentials, returns JWT on successful authentication.
-- **`IncrementReferral`**: Increments the `referral_count` field for a user identified by `referral_code`.
+- **`SetReferral`**: Increments the `referral_count` field for a user identified by `referral_code`.
 - **`RequestPasswordRecovery`**: Initiates password recovery by sending a recovery email or token.
 - **`ResetPassword`**: Verifies a recovery token, hashes the new password, and updates the user’s password.
 
@@ -137,7 +137,7 @@ To use these routes, send requests to the specified endpoints with appropriate H
 
 For instance:
 - **Creating a User**: Send a `POST` request to `/api/user/register` with JSON body containing user details.
-- **Incrementing a Referral**: Send a `PATCH` request to `/api/user/updateReferral` with the referral code in JSON format.
+- **Setting a Referral**: Send a `PATCH` request to `/api/user/setReferral` with the referral code and the original user's username in JSON format.
 
 ---
 

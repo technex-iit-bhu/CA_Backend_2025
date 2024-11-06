@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func Referral(c *fiber.Ctx) error {
+func SetReferral(c *fiber.Ctx) error {
 	ctx := context.Background()
 	db, err := database.Connect()
 	if err != nil {
