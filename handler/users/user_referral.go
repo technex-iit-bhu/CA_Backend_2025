@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func IncrementReferral(c *fiber.Ctx) error {
+func Referral(c *fiber.Ctx) error {
 	ctx := context.Background()
 	db, err := database.Connect()
 	if err != nil {
@@ -54,7 +54,7 @@ func IncrementReferral(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{
-		"message": "Referral count incremented successfully",
+		"message": "Updated Referral Successfully",
 		"user":    user,
 	})
 }

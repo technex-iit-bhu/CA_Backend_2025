@@ -19,7 +19,7 @@ func Route(app *fiber.App) {
 	user.Get("/profile", user_handler.GetUserProfile)
 	user.Post("/register", user_handler.CreateUser)
 	user.Patch("/login", user_handler.LoginUser)
-	user.Patch("/updateReferral", user_handler.IncrementReferral)
+	user.Patch("/setReferral", user_handler.Referral)
 
 	password := user.Group("/password")
 	password.Post("/recovery", user_handler.RequestPasswordRecovery)

@@ -70,12 +70,12 @@ Each user-related route is nested under `/api/user` and manages user operations,
   }
   ```
 
-### **4. Increment Referral**
+### **4. Set Referral**
 
 - **Method**: `PATCH`
-- **Endpoint**: `/api/user/updateReferral`
-- **Handler**: `user_handler.IncrementReferral`
-- **Description**: Increments the `referral_count` of a user based on a provided referral code.
+- **Endpoint**: `/api/user/Referral`
+- **Handler**: `user_handler.Referral`
+- **Description**: Increments the `referral_count` of a user based on a provided referral code while setting referral of user permanent.
 - **Request Body**:
   ```json
   {
