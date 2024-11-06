@@ -11,15 +11,16 @@ import (
 
 func Route(app *fiber.App) {
 	app.Use(cors.New())
-	app.Use("/api", middleware.Protected())
 	api := app.Group("/api", logger.New())
 	api.Get("/", handler.Hello)
 
 	user := api.Group("/user")
+	user.Use("/user", middleware.Protected())
 	user.Get("/profile", user_handler.GetUserProfile)
 	user.Post("/register", user_handler.CreateUser)
 	user.Patch("/login", user_handler.LoginUser)
-	
+	user.Patch("/updateReferral", user_handler.IncrementReferral)
+
 	password := user.Group("/password")
 	password.Post("/recovery", user_handler.RequestPasswordRecovery)
 	password.Post("/reset", user_handler.ResetPassword)

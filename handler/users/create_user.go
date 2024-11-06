@@ -26,6 +26,7 @@ func CreateUser(c *fiber.Ctx) error {
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
 	user.ReferralCode = utils.GetReferralCode(*user)
+	user.CA_ID = utils.GenerateCAID(*user)
 	user.Points = 0
 
 	if err := c.BodyParser(user); err != nil {

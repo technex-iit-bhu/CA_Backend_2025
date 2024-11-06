@@ -6,6 +6,6 @@ import (
 )
 
 func GetReferralCode(user models.User) string {
-	ref := fmt.Sprintf("%s_ca_%s", user.Username, user.PhoneNumber[:5])
+	ref := fmt.Sprintf("%s_ca_%s", user.Username, user.CA_ID)
 	return ref
 }
