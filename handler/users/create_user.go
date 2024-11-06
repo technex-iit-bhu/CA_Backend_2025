@@ -5,14 +5,22 @@ import (
 	"CA_Backend/models"
 	"CA_Backend/utils"
 	"context"
-	"github.com/gofiber/fiber/v2"
-	"go.mongodb.org/mongo-driver/bson"
 	"log"
 	"time"
+
+	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 func CreateUser(c *fiber.Ctx) error {
 	user := new(models.User)
+	if err := c.BodyParser(user); err != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"error":   err.Error(),
+			"message": "Failed to parse JSON Body",
+		})
+	}
+
 	ctx := context.Background()
 	db, err := database.Connect()
 
@@ -25,16 +33,10 @@ func CreateUser(c *fiber.Ctx) error {
 
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
-	user.ReferralCode = utils.GetReferralCode(*user)
 	user.CA_ID = utils.GenerateCAID(*user)
 	user.Points = 0
 
-	if err := c.BodyParser(user); err != nil {
-		return c.Status(400).JSON(fiber.Map{
-			"error":   err.Error(),
-			"message": "Failed to parse JSON Body",
-		})
-	}
+	user.ReferralCode = utils.GetReferralCode(*user)
 
 	if !utils.IsSafe(user.Password) {
 		return c.Status(400).JSON(fiber.Map{
@@ -45,17 +47,19 @@ func CreateUser(c *fiber.Ctx) error {
 
 	var existingUser models.User
 	filter := bson.D{{Key: "username", Value: user.Username}}
-	if err := collection.FindOne(ctx, filter).Decode(&existingUser); err != nil {
+	err = collection.FindOne(ctx, filter).Decode(&existingUser)
+	if err == nil {
 		return c.Status(400).JSON(fiber.Map{
-			"error":   err.Error(),
+			"error":   "Username already exists!!",
 			"message": "Username already exists!!",
 		})
 	}
 
 	filter = bson.D{{Key: "phone", Value: user.PhoneNumber}}
-	if err := collection.FindOne(ctx, filter).Decode(&existingUser); err != nil {
+	err = collection.FindOne(ctx, filter).Decode(&existingUser)
+	if err == nil {
 		return c.Status(400).JSON(fiber.Map{
-			"error":   err.Error(),
+			"error":   "Phone number already exists!!",
 			"message": "Phone number already exists!!",
 		})
 	}
