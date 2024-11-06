@@ -59,7 +59,6 @@ func CreateUser(c *fiber.Ctx) error {
 	if err == nil {
 		return c.Status(400).JSON(fiber.Map{
 			"error":   "Phone number already exists!!",
-			"message": "Phone number already exists!!",
 		})
 	}
 
