@@ -25,6 +25,7 @@ type User struct {
 	Branch         string             `json:"branch,omitempty" bson:"branch,omitempty"`
 	ReferralCode   string             `json:"referral_code,omitempty" bson:"referral_code,omitempty" binding:"required"`
 	ReferralCount  int                `json:"referral_count,omitempty" bson:"referral_count,omitempty" binding:"required"`
+	IsReferred     bool               `json:"is_referred,omitempty" bson:"is_referred,omitempty"`
 	Email          string             `json:"email,omitempty" bson:"email,omitempty" binding:"required"`
 	CreatedAt      time.Time          `json:"createdAt,omitempty" bson:"createdAt,omitempty" binding:"required"`
 	UpdatedAt      time.Time          `json:"updatedAt,omitempty" bson:"updatedAt,omitempty" binding:"required"`

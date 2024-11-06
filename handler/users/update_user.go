@@ -27,6 +27,10 @@ func UpdateUserDetails(c *fiber.Ctx) error {
 	if err := collection.FindOne(ctx, models.User{Username: updatedUser.Username}).Decode(user); err != nil {
 		return c.Status(404).JSON(fiber.Map{"message": "User not found"})
 	}
+	
+	if user.IsReferred && user.ReferralCode != "" {
+		return c.Status(404).JSON(fiber.Map{"message": "cannot update referral code again"})
+	}
 
 	if _, err := collection.UpdateOne(ctx, models.User{Username: updatedUser.Username}, updatedUser); err != nil {
 		return c.Status(500).JSON(fiber.Map{"message": err.Error()})
