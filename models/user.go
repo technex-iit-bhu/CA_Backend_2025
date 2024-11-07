@@ -23,6 +23,7 @@ type User struct {
 	Points         int                `json:"points,omitempty" bson:"points,omitempty"`
 	Year           int                `json:"year,omitempty" bson:"year,omitempty"`
 	Branch         string             `json:"branch,omitempty" bson:"branch,omitempty"`
+	Tasks          map[string]bool    `json:"completed_tasks,omitempty" bson:"completed_tasks,omitempty"`
 	ReferralCode   string             `json:"referral_code,omitempty" bson:"referral_code,omitempty" binding:"required"`
 	ReferralCount  int                `json:"referral_count,omitempty" bson:"referral_count,omitempty" binding:"required"`
 	IsReferred     bool               `json:"is_referred,omitempty" bson:"is_referred,omitempty"`
