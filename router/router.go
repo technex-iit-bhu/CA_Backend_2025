@@ -28,4 +28,13 @@ func Route(app *fiber.App) {
 
 	tasks := api.Group("/tasks")
 	tasks.Get("/", task_handler.GetAllTasks)
+	tasks.Post("/create", task_handler.CreateTask)
+	tasks.Get("/task/:task_id", task_handler.GetTask)
+	tasks.Post("/update/:task_id", task_handler.UpdateTask)
+
+	submissions := api.Group("/submissions")
+	submissions.Post("/submit", task_handler.SubmitTask)
+	submissions.Get("/get_user_submissions", task_handler.GetUserSubmissions)
+	submissions.Get("/verify/:submission_id", task_handler.VerifySubmission)
+
 }
