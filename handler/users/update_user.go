@@ -3,8 +3,11 @@ package user
 import (
 	"CA_Backend/database"
 	"CA_Backend/models"
+	"CA_Backend/utils"
 	"context"
+	
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 func UpdateUserDetails(c *fiber.Ctx) error {
@@ -22,6 +25,12 @@ func UpdateUserDetails(c *fiber.Ctx) error {
 			"message": "Failed to parse JSON Body",
 		})
 	}
+	token := c.Get("Authorization")
+	if len(token) > 7 { token = token[7:] } else { token = "" }
+	username, err := utils.DeserialiseUser(token)
+	if err != nil || updatedUser.Username != username{
+		return c.Status(401).JSON(fiber.Map{"message": "Invalid user"})
+	}
 
 	user := new(models.User)
 	if err := collection.FindOne(ctx, models.User{Username: updatedUser.Username}).Decode(user); err != nil {
@@ -32,7 +41,7 @@ func UpdateUserDetails(c *fiber.Ctx) error {
 		return c.Status(404).JSON(fiber.Map{"message": "Cannot update referral code again"})
 	}
 
-	if _, err := collection.UpdateOne(ctx, models.User{Username: updatedUser.Username}, updatedUser); err != nil {
+	if _, err := collection.UpdateOne(ctx, models.User{Username: updatedUser.Username}, bson.M{"$set": updatedUser}); err != nil {
 		return c.Status(500).JSON(fiber.Map{"message": err.Error()})
 	} else {
 		return c.Status(200).JSON(fiber.Map{
