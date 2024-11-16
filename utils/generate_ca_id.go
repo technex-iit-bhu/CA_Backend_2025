@@ -2,10 +2,13 @@ package utils
 
 import (
 	"CA_Backend/models"
-	"github.com/teris-io/shortid"
+	"crypto/rand"
+	"encoding/base32"
 )
 
 func GenerateCAID(user models.User) string {
-	uniqueID, _ := shortid.Generate()
-	return uniqueID
+	bytes := make([]byte, 10)
+	rand.Read(bytes)
+	id := base32.StdEncoding.WithPadding(base32.NoPadding).EncodeToString(bytes)[:16]
+	return id
 }

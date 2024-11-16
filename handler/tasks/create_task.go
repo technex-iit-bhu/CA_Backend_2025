@@ -4,34 +4,42 @@ import (
 	"CA_Backend/database"
 	"CA_Backend/models"
 	"context"
-	"log"
 	"github.com/gofiber/fiber/v2"
+	"time"
 )
 
 func CreateTask(c *fiber.Ctx) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+
+	db, err := database.Connect()
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"error":   err.Error(), 
+			"message": "Database connection failed",
+		})
+	}
+
 	task := new(models.Task)
 	if err := c.BodyParser(task); err != nil {
 		return c.Status(400).JSON(fiber.Map{
 			"error":   err.Error(),
-			"message": "Failed to parse JSON Body",
+			"message": "Failed to parse request body",
 		})
 	}
-	ctx := context.Background()
-	db, err := database.Connect()
-	if err != nil {
-		log.Fatal(err.Error())
-		return c.Status(500).JSON(fiber.Map{"message": err.Error()})
-	}
+
 	collection := db.Collection("tasks")
-	if res, err := collection.InsertOne(ctx, task); err != nil {
+
+	result, err := collection.InsertOne(ctx, task)
+	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"error":   err.Error(),
-			"message": "Failed to create task!!",
-		})
-	} else {
-		return c.Status(201).JSON(fiber.Map{
-			"id":      res.InsertedID,
-			"message": "Task created successfully",
+			"message": "Failed to create task",
 		})
 	}
+
+	return c.Status(201).JSON(fiber.Map{
+		"id":      result.InsertedID,
+		"message": "Task created successfully",
+	})
 }

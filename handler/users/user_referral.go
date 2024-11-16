@@ -4,13 +4,17 @@ import (
 	"CA_Backend/database"
 	"CA_Backend/models"
 	"context"
+	"strings"
+	"time"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func SetReferral(c *fiber.Ctx) error {
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
 	db, err := database.Connect()
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"message": err.Error()})
@@ -29,13 +33,25 @@ func SetReferral(c *fiber.Ctx) error {
 		})
 	}
 
-	filter := bson.D{{Key: "referral_code", Value: body.ReferralCode}}
+	code := body.ReferralCode
+	index := strings.Index(code, "_ca_")
+	if index == -1 {
+		return c.Status(400).JSON(fiber.Map{
+			"error":   "Invalid Referral Code",
+			"message": "Referral Code does not match the required format",
+		})
+	}
+	ca_id := code[index+4:]
+	filter := bson.D{{Key: "ca_id", Value: ca_id}}
 
 	update := bson.D{{Key: "$inc", Value: bson.D{{Key: "referral_count", Value: 1}}}}
-
-	opts := options.FindOneAndUpdate().SetReturnDocument(options.After)
 	user := new(models.User)
-	err = db.Collection("user").FindOneAndUpdate(ctx, filter, update, opts).Decode(user)
+	err = db.Collection("user").FindOneAndUpdate(
+		ctx,
+		filter,
+		update,
+		options.FindOneAndUpdate().SetReturnDocument(options.After),
+	).Decode(user)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"error":   err.Error(),
