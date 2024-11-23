@@ -27,7 +27,7 @@ func UpdateTask(c *fiber.Ctx) error {
 	}
 
 	task := new(models.Task)
-	task_id:=c.Params("task_id")
+	task_id := c.Params("task_id")
 	objectId, _ := primitive.ObjectIDFromHex(task_id)
 	if err := collection.FindOne(ctx, bson.D{{Key: "_id", Value: objectId}}).Decode(task); err != nil {
 		return c.Status(404).JSON(fiber.Map{"message": "Task not found"})

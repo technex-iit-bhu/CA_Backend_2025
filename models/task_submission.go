@@ -11,7 +11,7 @@ type TaskSubmission struct {
 	User         string             `json:"user,omitempty" bson:"user,omitempty" binding:"required"`
 	Timestamp    time.Time          `json:"timestamp,omitempty" bson:"timestamp,omitempty" binding:"required"`
 	Link         string             `json:"link,omitempty" bson:"link,omitempty" binding:"required"`
-	ImageUrl        string             `json:"image_url,omitempty" bson:"image_url,omitempty" binding:"required"`
-	Verified     bool             `json:"verified,omitempty" bson:"verified,omitempty" binding:"required"`
+	ImageUrl     string             `json:"image_url,omitempty" bson:"image_url,omitempty" binding:"required"`
+	Verified     bool               `json:"verified,omitempty" bson:"verified,omitempty" binding:"required"`
 	AdminComment string             `json:"admin_comment,omitempty" bson:"admin_comment,omitempty" binding:"required"`
 }

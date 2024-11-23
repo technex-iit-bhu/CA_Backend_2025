@@ -13,8 +13,8 @@ import (
 
 func GetTask(c *fiber.Ctx) error {
 	ctx := context.Background()
-	task_id:=c.Params("task_id")
-	objectId, _ := primitive.ObjectIDFromHex(task_id)	
+	task_id := c.Params("task_id")
+	objectId, _ := primitive.ObjectIDFromHex(task_id)
 
 	db, err := database.Connect()
 	if err != nil {

@@ -12,7 +12,7 @@ import (
 )
 
 func SubmitTask(c *fiber.Ctx) error {
-	
+
 	task_submission := new(models.TaskSubmission)
 	if err := c.BodyParser(task_submission); err != nil {
 		return c.Status(400).JSON(fiber.Map{

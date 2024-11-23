@@ -33,7 +33,7 @@ func GetUserSubmissions(c *fiber.Ctx) error {
 
 	var user_submissions []models.TaskSubmission
 
-	cursor, err := db.Collection("task_submissions").Find(ctx, bson.D{{Key:"User",Value: username}}, options.Find())
+	cursor, err := db.Collection("task_submissions").Find(ctx, bson.D{{Key: "User", Value: username}}, options.Find())
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"error":   err.Error(),

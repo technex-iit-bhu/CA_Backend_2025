@@ -5,7 +5,7 @@ import (
 	"CA_Backend/models"
 	"CA_Backend/utils"
 	"context"
-	
+
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -26,9 +26,13 @@ func UpdateUserDetails(c *fiber.Ctx) error {
 		})
 	}
 	token := c.Get("Authorization")
-	if len(token) > 7 { token = token[7:] } else { token = "" }
+	if len(token) > 7 {
+		token = token[7:]
+	} else {
+		token = ""
+	}
 	username, err := utils.DeserialiseUser(token)
-	if err != nil || updatedUser.Username != username{
+	if err != nil || updatedUser.Username != username {
 		return c.Status(401).JSON(fiber.Map{"message": "Invalid user"})
 	}
 

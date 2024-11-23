@@ -15,7 +15,7 @@ func CreateTask(c *fiber.Ctx) error {
 	db, err := database.Connect()
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
-			"error":   err.Error(), 
+			"error":   err.Error(),
 			"message": "Database connection failed",
 		})
 	}

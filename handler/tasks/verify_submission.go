@@ -52,7 +52,7 @@ func VerifySubmission(c *fiber.Ctx) error {
 	}
 
 	task_submission.Verified = true
-	points:=0
+	points := 0
 	if points, err = get_task_points(db, ctx, task_submission.Task); err != nil {
 		return c.Status(400).JSON(fiber.Map{"message": err.Error()})
 	}
