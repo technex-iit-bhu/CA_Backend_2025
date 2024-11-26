@@ -11,9 +11,11 @@ import (
 var serialKey = []byte(config.Config("JWT_SECRET"))
 var recoveryKey = []byte(config.Config("RECOVERY_SECRET"))
 
-func SerialiseUser(username string) (string, error) {
+func SerialiseUser(username string, userID string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": username,
+		"user_id":  userID,
+		"exp":      time.Now().Add(time.Hour * 24).Unix(),
 	})
 	signedToken, err := token.SignedString(serialKey)
 	if err != nil {
@@ -22,16 +24,16 @@ func SerialiseUser(username string) (string, error) {
 	return signedToken, nil
 }
 
-func DeserialiseUser(signedToken string) (string, error) {
+func DeserialiseUser(signedToken string) (string, string, error) {
 	token, err := jwt.Parse(signedToken, func(token *jwt.Token) (interface{}, error) {
 		return []byte(serialKey), nil
 	})
 
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	claims, _ := token.Claims.(jwt.MapClaims)
-	return claims["username"].(string), nil
+	return claims["username"].(string), claims["user_id"].(string), err
 }
 
 func SerialiseRecovery(username string) (string, error) {

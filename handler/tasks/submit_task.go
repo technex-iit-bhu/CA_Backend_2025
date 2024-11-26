@@ -26,7 +26,7 @@ func SubmitTask(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"message": "Authorization header missing or improperly formatted"})
 	}
 	token := tokenString[7:]
-	username, _ := utils.DeserialiseUser(token)
+	username, _, _ := utils.DeserialiseUser(token)
 
 	task_submission.User = username
 	task_submission.Timestamp = time.Now()

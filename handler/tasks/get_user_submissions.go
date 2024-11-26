@@ -29,7 +29,7 @@ func GetUserSubmissions(c *fiber.Ctx) error {
 	}
 	token := tokenString[7:]
 
-	username, _ := utils.DeserialiseUser(token)
+	username, _, _ := utils.DeserialiseUser(token)
 
 	var user_submissions []models.TaskSubmission
 

@@ -31,7 +31,7 @@ func UpdateUserDetails(c *fiber.Ctx) error {
 	} else {
 		token = ""
 	}
-	username, err := utils.DeserialiseUser(token)
+	username, _, err := utils.DeserialiseUser(token)
 	if err != nil || updatedUser.Username != username {
 		return c.Status(401).JSON(fiber.Map{"message": "Invalid user"})
 	}

@@ -19,10 +19,12 @@ func GetUserProfile(c *fiber.Ctx) error {
 	}
 	token := tokenString[7:]
 
-	username, err := utils.DeserialiseUser(token)
+	username, _, err := utils.DeserialiseUser(token)
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{"message": "Invalid or expired token"})
 	}
+
+	print(username)
 
 	db, err := database.Connect()
 	if err != nil {
