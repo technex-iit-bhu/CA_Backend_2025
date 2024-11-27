@@ -30,8 +30,17 @@ func DeserialiseUser(signedToken string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	claims, _ := token.Claims.(jwt.MapClaims)
-	return claims["username"].(string), nil
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
+        return "", fmt.Errorf("invalid token or claims")
+    }
+
+    username, ok := claims["username"].(string)
+    if !ok {
+        return "", fmt.Errorf("username claim is missing or not a string")
+    }
+
+    return username, nil
 }
 
 func SerialiseRecovery(username string) (string, error) {
