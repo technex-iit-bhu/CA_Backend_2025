@@ -4,7 +4,7 @@ import (
 	"CA_Backend/config"
 	"fmt"
 	"time"
-
+	"log"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -14,17 +14,20 @@ var recoveryKey = []byte(config.Config("RECOVERY_SECRET"))
 func SerialiseUser(username string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": username,
+		"exp":      time.Now().Add(24 * time.Hour).Unix(),
 	})
 	signedToken, err := token.SignedString(serialKey)
 	if err != nil {
 		return "", err
 	}
+	log.Printf("Deserialising token: %+v\n", signedToken)
+
 	return signedToken, nil
 }
 
 func DeserialiseUser(signedToken string) (string, error) {
 	token, err := jwt.Parse(signedToken, func(token *jwt.Token) (interface{}, error) {
-		return []byte(serialKey), nil
+		return serialKey, nil
 	})
 
 	if err != nil {
@@ -32,15 +35,22 @@ func DeserialiseUser(signedToken string) (string, error) {
 	}
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok || !token.Valid {
-        return "", fmt.Errorf("invalid token or claims")
-    }
+		return "", fmt.Errorf("invalid token or claims")
+	}
 
-    username, ok := claims["username"].(string)
-    if !ok {
-        return "", fmt.Errorf("username claim is missing or not a string")
-    }
+	if exp, ok := claims["exp"].(float64); ok {
+		if time.Now().After(time.Unix(int64(exp), 0)) {
+			return "", fmt.Errorf("token expired")
+		}
+	}
 
-    return username, nil
+	username, ok := claims["username"].(string)
+	if !ok {
+		return "", fmt.Errorf("username claim is missing or not a string")
+	}
+	log.Printf("Token claims: %+v\n", claims)
+
+	return username, nil
 }
 
 func SerialiseRecovery(username string) (string, error) {
