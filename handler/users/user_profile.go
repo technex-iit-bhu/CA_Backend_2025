@@ -14,6 +14,7 @@ import (
 func GetUserProfile(c *fiber.Ctx) error {
 	ctx := context.Background()
 	tokenString := c.Get("Authorization")
+	log.Printf("Authorization header: %s\n", tokenString)
 	if len(tokenString) < 8 || tokenString[:7] != "Bearer " {
 		return c.Status(400).JSON(fiber.Map{"message": "Authorization header missing or improperly formatted"})
 	}
@@ -21,7 +22,10 @@ func GetUserProfile(c *fiber.Ctx) error {
 
 	username, err := utils.DeserialiseUser(token)
 	if err != nil {
-		return c.Status(404).JSON(fiber.Map{"message": "Invalid or expired token"})
+		return c.Status(404).JSON(fiber.Map{
+			"message": "Invalid or expired token",
+			"error": err.Error(),
+		})
 	}
 
 	db, err := database.Connect()

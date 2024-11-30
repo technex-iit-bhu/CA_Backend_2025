@@ -20,35 +20,49 @@ func SerialiseUser(username string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	log.Printf("Deserialising token: %+v\n", signedToken)
-
+	log.Printf("Serialising token: %+v\t", signedToken)
+	log.Println("Generated Token: \t", token)
 	return signedToken, nil
 }
 
 func DeserialiseUser(signedToken string) (string, error) {
+	fmt.Printf("SerialKey: %s\n", serialKey)
+	log.Printf("Deserialising token: %s\n", signedToken)
 	token, err := jwt.Parse(signedToken, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
 		return serialKey, nil
 	})
 
 	if err != nil {
-		return "", err
+		log.Printf("Error parsing token: %v\n", err)
+		return "", fmt.Errorf("error parsing token")
 	}
+
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok || !token.Valid {
+		log.Printf("Invalid token or claims: %+v\n", claims)
 		return "", fmt.Errorf("invalid token or claims")
 	}
 
-	if exp, ok := claims["exp"].(float64); ok {
-		if time.Now().After(time.Unix(int64(exp), 0)) {
-			return "", fmt.Errorf("token expired")
-		}
+	exp, ok := claims["exp"].(float64)
+	if !ok {
+		log.Println("Expiration claim is missing or not a float64")
+		return "", fmt.Errorf("invalid token: expiration claim missing")
+	}
+
+	if time.Now().After(time.Unix(int64(exp), 0)) {
+		log.Println("Token expired")
+		return "", fmt.Errorf("token expired")
 	}
 
 	username, ok := claims["username"].(string)
 	if !ok {
+		log.Println("Username claim is missing or not a string")
 		return "", fmt.Errorf("username claim is missing or not a string")
 	}
-	log.Printf("Token claims: %+v\n", claims)
+	log.Printf("Deserialised username: %s\n", username)
 
 	return username, nil
 }

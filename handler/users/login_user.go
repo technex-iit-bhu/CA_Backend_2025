@@ -32,7 +32,7 @@ func LoginUser(c *fiber.Ctx) error {
 	if !utils.CheckPassword(user.Password, result.Password) {
 		return c.Status(404).JSON(fiber.Map{"message": "invalid password"})
 	} else {
-		token, err := utils.GenerateJWT(user.ID.Hex())
+		token, err := utils.SerialiseUser(result.Username)
 		if err != nil {
 			return c.Status(500).JSON(fiber.Map{"message": err.Error()})
 		}
