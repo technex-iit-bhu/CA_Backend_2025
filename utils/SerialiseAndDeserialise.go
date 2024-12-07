@@ -26,8 +26,6 @@ func SerialiseUser(username string) (string, error) {
 }
 
 func DeserialiseUser(signedToken string) (string, error) {
-	fmt.Printf("SerialKey: %s\n", serialKey)
-	log.Printf("Deserialising token: %s\n", signedToken)
 	token, err := jwt.Parse(signedToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
@@ -62,7 +60,6 @@ func DeserialiseUser(signedToken string) (string, error) {
 		log.Println("Username claim is missing or not a string")
 		return "", fmt.Errorf("username claim is missing or not a string")
 	}
-	log.Printf("Deserialised username: %s\n", username)
 
 	return username, nil
 }
