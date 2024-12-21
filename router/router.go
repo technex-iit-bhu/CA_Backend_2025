@@ -38,4 +38,6 @@ func Route(app *fiber.App) {
 	submissions.Get("/get_user_submissions", task_handler.GetUserSubmissions)
 	submissions.Get("/verify/:submission_id", task_handler.VerifySubmission)
 
+	api.Get("/leaderboard", handler.GetLeaderboard)
+
 }
