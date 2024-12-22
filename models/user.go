@@ -1,8 +1,9 @@
 package models
 
 import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type User struct {
@@ -11,8 +12,8 @@ type User struct {
 	Name           string             `json:"name,omitempty" bson:"name,omitempty" binding:"required"`
 	Username       string             `json:"username,omitempty" bson:"username,omitempty" binding:"required"`
 	Password       string             `json:"password,omitempty" bson:"password,omitempty" binding:"required"`
-	PhoneNumber    string             `json:"phone,omitempty" bson:"phone,omitempty" binding:"required"`
-	WhatsappNumber string             `json:"whatsapp,omitempty" bson:"whatsapp,omitempty" binding:"required"`
+	PhoneNumber    string             `json:"phoneNumber,omitempty" bson:"phoneNumber,omitempty" binding:"required"`
+	WhatsappNumber string             `json:"whatsappNumber,omitempty" bson:"whatsappNumber,omitempty" binding:"required"`
 	Institute      string             `json:"institute,omitempty" bson:"institute,omitempty" binding:"required"`
 	City           string             `json:"city,omitempty" bson:"city,omitempty"`
 	Postal_address string             `json:"postal_code,omitempty" bson:"postal_code,omitempty"`

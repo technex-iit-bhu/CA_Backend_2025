@@ -50,15 +50,15 @@ func CreateUser(c *fiber.Ctx) error {
 	err = collection.FindOne(ctx, filter).Decode(&existingUser)
 	if err == nil {
 		return c.Status(400).JSON(fiber.Map{
-			"error": "Username already exists!!",
+			"message": "Username already exists!!",
 		})
 	}
 
-	filter = bson.D{{Key: "phone", Value: user.PhoneNumber}}
+	filter = bson.D{{Key: "phoneNumber", Value: user.PhoneNumber}}
 	err = collection.FindOne(ctx, filter).Decode(&existingUser)
 	if err == nil {
 		return c.Status(400).JSON(fiber.Map{
-			"error": "Phone number already exists!!",
+			"message": "Phone number already exists!!",
 		})
 	}
 
