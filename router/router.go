@@ -14,6 +14,7 @@ func Route(app *fiber.App) {
 	app.Use(cors.New())
 	api := app.Group("/api", logger.New())
 	api.Get("/", handler.Hello)
+	api.Get("/leaderboard", handler.GetLeaderboard)
 
 	user := api.Group("/user")
 	user.Use("/user", middleware.Protected())
