@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"log"
+	"os"
 )
 
 func main() {
@@ -14,9 +15,13 @@ func main() {
 	app.Use(cors.New())
 	router.Route(app)
 	if err := database.Init(); err != nil {
-		log.Fatal("unable to connect to client")
+		log.Fatal("unable to connect to database")
 	}
 	defer database.Disconnect()
-	app.Listen(":6969")
-	log.Println("Server started on port 6969")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "6969"
+	}
+	app.Listen(":" + port)
+	log.Println("Server started on port " + port)
 }
