@@ -11,7 +11,11 @@ import (
 )
 
 func Route(app *fiber.App) {
-	app.Use(cors.New())
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowMethods: "GET, POST, PATCH",
+	}))
 	api := app.Group("/api", logger.New())
 	api.Get("/", handler.Hello)
 	api.Get("/leaderboard", handler.GetLeaderboard)
