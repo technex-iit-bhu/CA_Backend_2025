@@ -11,12 +11,23 @@ import (
 )
 
 func SubmitTask(c *fiber.Ctx) error {
-
 	task_submission := new(models.TaskSubmission)
 	if err := c.BodyParser(task_submission); err != nil {
 		return c.Status(400).JSON(fiber.Map{
 			"error":   err.Error(),
 			"message": "Failed to parse JSON Body",
+		})
+	}
+
+	if task_submission.DriveLink == "" {
+		return c.Status(400).JSON(fiber.Map{
+			"message": "Drive link is required",
+		})
+	}
+
+	if !utils.IsValidDriveLink(task_submission.DriveLink) {
+		return c.Status(400).JSON(fiber.Map{
+			"message": "Invalid Drive link provided",
 		})
 	}
 
@@ -32,6 +43,7 @@ func SubmitTask(c *fiber.Ctx) error {
 	task_submission.Verified = false
 	task_submission.AdminComment = ""
 	ctx := context.Background()
+
 	db, err := database.Connect()
 	if err != nil {
 		log.Fatal(err.Error())
