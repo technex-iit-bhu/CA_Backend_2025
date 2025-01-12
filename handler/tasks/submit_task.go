@@ -7,7 +7,6 @@ import (
 	"context"
 	"log"
 	"time"
-
 	"github.com/gofiber/fiber/v2"
 )
 

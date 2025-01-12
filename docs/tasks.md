@@ -20,7 +20,8 @@
            "description": "Finish the detailed API documentation by the deadline.",
            "points": 50,
            "deadline": "2024-12-01T00:00:00Z",
-           "image_url": "https://example.com/task-image.jpg"
+           "image_url": "https://example.com/task-image.jpg",
+           "status": "active"
          },
          ...
        ]

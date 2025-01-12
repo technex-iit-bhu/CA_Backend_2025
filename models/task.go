@@ -12,4 +12,5 @@ type Task struct {
 	Points      int                `json:"points,omitempty" bson:"points,omitempty" binding:"required"`
 	Deadline    time.Time          `json:"deadline,omitempty" bson:"deadline,omitempty" binding:"required"`
 	ImageUrl    string             `json:"image_url,omitempty" bson:"image_url,omitempty" binding:"required"`
+	Status      string             `json:"status,omitempty" bson:"status,omitempty" binding:"required"`
 }

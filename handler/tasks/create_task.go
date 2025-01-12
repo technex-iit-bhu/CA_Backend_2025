@@ -27,7 +27,7 @@ func CreateTask(c *fiber.Ctx) error {
 			"message": "Failed to parse request body",
 		})
 	}
-
+	task.Status = "active"
 	collection := db.Collection("tasks")
 
 	result, err := collection.InsertOne(ctx, task)
