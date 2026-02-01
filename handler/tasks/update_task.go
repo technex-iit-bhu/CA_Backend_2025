@@ -18,7 +18,7 @@ func UpdateTask(c *fiber.Ctx) error {
 	}
 
 	collection := db.Collection("tasks")
-	updatedTask := new(models.User)
+	updatedTask := new(models.Task)
 	if err := c.BodyParser(updatedTask); err != nil {
 		return c.Status(400).JSON(fiber.Map{
 			"error":   err.Error(),
@@ -33,7 +33,7 @@ func UpdateTask(c *fiber.Ctx) error {
 		return c.Status(404).JSON(fiber.Map{"message": "Task not found"})
 	}
 
-	if _, err := collection.UpdateOne(ctx, bson.D{{Key: "_id", Value: objectId}}, updatedTask); err != nil {
+	if _, err := collection.UpdateOne(ctx, bson.D{{Key: "_id", Value: objectId}}, bson.D{{Key: "$set", Value: updatedTask}}); err != nil {
 		return c.Status(500).JSON(fiber.Map{"message": err.Error()})
 	} else {
 		return c.Status(200).JSON(fiber.Map{

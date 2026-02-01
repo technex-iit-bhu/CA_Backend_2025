@@ -5,6 +5,7 @@ import (
 	task_handler "CA_Backend/handler/tasks"
 	user_handler "CA_Backend/handler/users"
 	"CA_Backend/middleware"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -14,7 +15,7 @@ func Route(app *fiber.App) {
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
 		AllowHeaders: "Origin, Content-Type, Accept",
-		AllowMethods: "GET, POST, PATCH",
+		AllowMethods: "GET, POST, PATCH, DELETE",
 	}))
 	api := app.Group("/api", logger.New())
 	api.Get("/", handler.Hello)
@@ -38,10 +39,12 @@ func Route(app *fiber.App) {
 	tasks.Post("/create", task_handler.CreateTask)
 	tasks.Get("/task/:task_id", task_handler.GetTask)
 	tasks.Post("/update/:task_id", task_handler.UpdateTask)
+	tasks.Delete("/task/:task_id", task_handler.DeleteTask)
 
 	submissions := api.Group("/submissions")
 	submissions.Post("/submit", task_handler.SubmitTask)
 	submissions.Get("/get_user_submissions", task_handler.GetUserSubmissions)
 	submissions.Get("/verify/:submission_id", task_handler.VerifySubmission)
+	submissions.Get("/all", task_handler.GetAllSubmissions)
 
 }
