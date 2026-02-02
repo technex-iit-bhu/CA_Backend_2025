@@ -5,7 +5,7 @@ import (
 	"CA_Portal_backend/models"
 	"context"
 
-	// "time"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -67,6 +67,7 @@ func AddAdminComment(c *fiber.Ctx) error {
 		"$set": bson.M{
 			"admin_comment": req.Comment,
 			"verified":      false, // Reset verification when admin comments
+			"last_reviewed_at":  time.Now(), // Track when admin last reviewed/commented
 		},
 	}
 

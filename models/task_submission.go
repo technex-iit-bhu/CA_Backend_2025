@@ -15,6 +15,8 @@ type TaskSubmission struct {
 	ImageUrl     string             `json:"image_url,omitempty" bson:"image_url,omitempty"`
 	Verified     bool               `json:"verified,omitempty" bson:"verified,omitempty"`
 	AdminComment string             `json:"admin_comment,omitempty" bson:"admin_comment,omitempty"`
-	Version      int                `json:"version,omitempty" bson:"version,omitempty"` // NEW: Track submission versions
-	UpdatedAt    time.Time          `json:"updated_at,omitempty" bson:"updated_at,omitempty"` // NEW: Last update time
+	Version      int                `json:"version,omitempty" bson:"version,omitempty"` // Track submission versions
+	UpdatedAt    time.Time          `json:"updated_at,omitempty" bson:"updated_at,omitempty"` // Last update time
+	LastReviewedAt  time.Time          `json:"last_reviewed_at,omitempty" bson:"last_reviewed_at,omitempty"`
+
 }

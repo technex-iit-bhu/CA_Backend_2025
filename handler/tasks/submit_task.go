@@ -53,8 +53,10 @@ func SubmitTask(c *fiber.Ctx) error {
 	taskSubmission.User = username
 	taskSubmission.Username = username  // IMPORTANT: Set this too!
 	taskSubmission.Timestamp = time.Now()
+	taskSubmission.UpdatedAt = time.Now()
 	taskSubmission.Verified = false
 	taskSubmission.AdminComment = ""
+	taskSubmission.Version = 1
 
 	// Connect to database
 	db, err := database.Connect()
@@ -83,14 +85,23 @@ func SubmitTask(c *fiber.Ctx) error {
 		// Allow resubmission - update existing
 		log.Printf("Updating submission for user: %s, task: %s", username, taskSubmission.Task)
 
+		newVersion := existingSubmission.Version + 1
+		if newVersion < 1 {
+			newVersion = 1
+		}
 		update := bson.M{
 			"$set": bson.M{
-				"drive_link":    taskSubmission.DriveLink,
-				"username":      username, // IMPORTANT: Update username too
-				"timestamp":     time.Now(),
-				"verified":      false,
-				"admin_comment": "",
-				"image_url":     taskSubmission.ImageUrl,
+				"drive_link":       taskSubmission.DriveLink,
+				"username":         username, // IMPORTANT: Update username too
+				// "timestamp":        time.Now(),
+				"verified":         false,
+				"image_url":        taskSubmission.ImageUrl,
+				"updated_at":       time.Now(),
+				"version":	        newVersion,
+				// "last_reviewed_at": time.Time{},
+			},
+			"$unset": bson.M{
+				"last_reviewed_at": "", // Clear this so admin gets notified
 			},
 		}
 
@@ -116,26 +127,27 @@ func SubmitTask(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{
 			"id":      existingSubmission.ID,
 			"message": "Submission updated successfully",
+			"version": newVersion,
 		})
 	} else if err != mongo.ErrNoDocuments {
 		return c.Status(500).JSON(fiber.Map{
 			"message": "Database error: " + err.Error(),
 		})
 	}
+		// No existing submission - create new
+		// log.Printf("Creating new submission for user: %s, task: %s", username, taskSubmission.Task)
 
-	// No existing submission - create new
-	log.Printf("Creating new submission for user: %s, task: %s", username, taskSubmission.Task)
+		res, err := collection.InsertOne(context.Background(), taskSubmission)
+		if err != nil {
+			return c.Status(500).JSON(fiber.Map{
+				"error":   err.Error(),
+				"message": "Failed to create task submission",
+			})
+		}
 
-	res, err := collection.InsertOne(context.Background(), taskSubmission)
-	if err != nil {
-		return c.Status(500).JSON(fiber.Map{
-			"error":   err.Error(),
-			"message": "Failed to create task submission",
+		return c.Status(201).JSON(fiber.Map{
+			"id":      res.InsertedID,
+			"message": "Submitted successfully",
+			"version": taskSubmission.Version,
 		})
-	}
-
-	return c.Status(201).JSON(fiber.Map{
-		"id":      res.InsertedID,
-		"message": "Submitted successfully",
-	})
 }
