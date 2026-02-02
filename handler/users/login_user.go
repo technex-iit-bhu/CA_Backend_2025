@@ -5,6 +5,7 @@ import (
 	"CA_Portal_backend/models"
 	"CA_Portal_backend/utils"
 	"context"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -23,6 +24,7 @@ func LoginUser(c *fiber.Ctx) error {
 			"message": "Failed to parse JSON Body",
 		})
 	}
+	user.Username = strings.TrimSpace(strings.ToLower(user.Username))
 
 	var result models.User
 	err = db.Collection("users").FindOne(context.Background(), bson.D{{Key: "username", Value: user.Username}}).Decode(&result)
