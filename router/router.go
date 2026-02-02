@@ -1,10 +1,10 @@
 package router
 
 import (
-	"CA_Backend/handler"
-	task_handler "CA_Backend/handler/tasks"
-	user_handler "CA_Backend/handler/users"
-	"CA_Backend/middleware"
+	"CA_Portal_backend/handler"
+	task_handler "CA_Portal_backend/handler/tasks"
+	user_handler "CA_Portal_backend/handler/users"
+	"CA_Portal_backend/middleware"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -46,5 +46,5 @@ func Route(app *fiber.App) {
 	submissions.Get("/get_user_submissions", task_handler.GetUserSubmissions)
 	submissions.Get("/verify/:submission_id", task_handler.VerifySubmission)
 	submissions.Get("/all", task_handler.GetAllSubmissions)
-
+	submissions.Post("/comment/:submission_id", task_handler.AddAdminComment) // NEW: Add this line
 }

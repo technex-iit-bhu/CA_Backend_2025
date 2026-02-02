@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"CA_Backend/models"
+	"CA_Portal_backend/models"
 	"crypto/rand"
 	"encoding/base32"
 )

@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"CA_Backend/database"
+	"CA_Portal_backend/database"
 	"context"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"

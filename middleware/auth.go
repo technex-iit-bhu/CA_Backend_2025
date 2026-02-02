@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"CA_Backend/config"
+	"CA_Portal_backend/config"
 
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v2"

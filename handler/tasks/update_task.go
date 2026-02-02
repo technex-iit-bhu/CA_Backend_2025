@@ -1,8 +1,8 @@
 package tasks
 
 import (
-	"CA_Backend/database"
-	"CA_Backend/models"
+	"CA_Portal_backend/database"
+	"CA_Portal_backend/models"
 	"context"
 
 	"github.com/gofiber/fiber/v2"

@@ -1,4 +1,4 @@
-module CA_Backend
+module CA_Portal_backend
 
 go 1.22.2
 

@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"CA_Backend/config"
+	"CA_Portal_backend/config"
 	"fmt"
 	smtp "net/smtp"
 )

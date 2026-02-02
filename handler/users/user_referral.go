@@ -1,14 +1,15 @@
 package user
 
 import (
-	"CA_Backend/database"
-	"CA_Backend/models"
+	"CA_Portal_backend/database"
+	"CA_Portal_backend/models"
 	"context"
+	"strings"
+	"time"
+
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"strings"
-	"time"
 )
 
 func SetReferral(c *fiber.Ctx) error {

@@ -1,10 +1,11 @@
 package utils
 
 import (
-	"CA_Backend/config"
+	"CA_Portal_backend/config"
 	"fmt"
-	"time"
 	"log"
+	"time"
+
 	"github.com/golang-jwt/jwt/v5"
 )
 

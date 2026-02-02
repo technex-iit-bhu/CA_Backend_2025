@@ -1,12 +1,13 @@
 package tasks
 
 import (
-	"CA_Backend/database"
-	"CA_Backend/models"
-	"CA_Backend/utils"
+	"CA_Portal_backend/database"
+	"CA_Portal_backend/models"
+	"CA_Portal_backend/utils"
 	"context"
 	"log"
 	"time"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -28,7 +29,7 @@ func SubmitTask(c *fiber.Ctx) error {
 		})
 	}
 
-	// If you want to validate the link format:
+	// Validate Drive link format
 	if !utils.IsValidDriveLink(taskSubmission.DriveLink) {
 		return c.Status(400).JSON(fiber.Map{
 			"message": "Invalid Drive link provided",
@@ -44,14 +45,18 @@ func SubmitTask(c *fiber.Ctx) error {
 	}
 	token := tokenString[7:]
 	username, _ := utils.DeserialiseUser(token)
+	username = strings.ToLower(username)
+	log.Printf("Username (lowercase): %s", username)
 
-	// Fill in submission details
+
+	// Fill in submission details - ENSURE BOTH User AND Username are set
 	taskSubmission.User = username
+	taskSubmission.Username = username  // IMPORTANT: Set this too!
 	taskSubmission.Timestamp = time.Now()
 	taskSubmission.Verified = false
 	taskSubmission.AdminComment = ""
 
-	// Insert into DB
+	// Connect to database
 	db, err := database.Connect()
 	if err != nil {
 		log.Fatal(err.Error())
@@ -66,26 +71,69 @@ func SubmitTask(c *fiber.Ctx) error {
 		"task": taskSubmission.Task,
 	}).Decode(existingSubmission)
 
-	// If err == nil => found doc => conflict
+	// If submission exists
 	if err == nil {
-		return c.Status(fiber.StatusConflict).JSON(fiber.Map{
-			"message": "You have already submitted this task.",
+		// Check if already verified
+		if existingSubmission.Verified {
+			return c.Status(fiber.StatusConflict).JSON(fiber.Map{
+				"message": "This task has already been verified. No further submissions allowed.",
+			})
+		}
+
+		// Allow resubmission - update existing
+		log.Printf("Updating submission for user: %s, task: %s", username, taskSubmission.Task)
+
+		update := bson.M{
+			"$set": bson.M{
+				"drive_link":    taskSubmission.DriveLink,
+				"username":      username, // IMPORTANT: Update username too
+				"timestamp":     time.Now(),
+				"verified":      false,
+				"admin_comment": "",
+				"image_url":     taskSubmission.ImageUrl,
+			},
+		}
+
+		result, err := collection.UpdateOne(
+			context.Background(),
+			bson.M{"_id": existingSubmission.ID},
+			update,
+		)
+
+		if err != nil {
+			return c.Status(500).JSON(fiber.Map{
+				"error":   err.Error(),
+				"message": "Failed to update submission",
+			})
+		}
+
+		if result.MatchedCount == 0 {
+			return c.Status(404).JSON(fiber.Map{
+				"message": "Submission not found",
+			})
+		}
+
+		return c.Status(200).JSON(fiber.Map{
+			"id":      existingSubmission.ID,
+			"message": "Submission updated successfully",
 		})
 	} else if err != mongo.ErrNoDocuments {
-		// Some other error
 		return c.Status(500).JSON(fiber.Map{
 			"message": "Database error: " + err.Error(),
 		})
 	}
 
-	// If we reach here => no existing submission => insert new
+	// No existing submission - create new
+	log.Printf("Creating new submission for user: %s, task: %s", username, taskSubmission.Task)
+
 	res, err := collection.InsertOne(context.Background(), taskSubmission)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"error":   err.Error(),
-			"message": "Failed to create task submission!!",
+			"message": "Failed to create task submission",
 		})
 	}
+
 	return c.Status(201).JSON(fiber.Map{
 		"id":      res.InsertedID,
 		"message": "Submitted successfully",

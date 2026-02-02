@@ -1,7 +1,7 @@
 package user
 
 import (
-	"CA_Backend/database"
+	"CA_Portal_backend/database"
 	"context"
 	"github.com/gofiber/fiber/v2"
 	"log"
@@ -19,7 +19,7 @@ func CountUsers(c *fiber.Ctx) error {
 		})
 	}
 	collection := db.Collection("users")
-	
+
 	count, err := collection.CountDocuments(ctx, bson.D{})
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{

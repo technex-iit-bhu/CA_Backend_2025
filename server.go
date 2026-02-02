@@ -1,13 +1,14 @@
 package main
 
 import (
-	"CA_Backend/database"
-	"CA_Backend/router"
+	"CA_Portal_backend/database"
+	"CA_Portal_backend/router"
 	_ "fmt"
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
 	"log"
 	"os"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func main() {
