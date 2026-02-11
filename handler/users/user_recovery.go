@@ -5,6 +5,7 @@ import (
 	"CA_Portal_backend/models"
 	"CA_Portal_backend/utils"
 	"context"
+	// "log"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -30,6 +31,7 @@ func RequestPasswordRecovery(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{"message": "Email not registered"})
 	}
+	// log.Printf("User found for email %s: %s", req.Email, user.Username)
 
 	token, err := utils.SerialiseRecovery(user.Username)
 	if err != nil {
@@ -57,6 +59,12 @@ func ResetPassword(c *fiber.Ctx) error {
 	username, err := utils.DeserialiseRecovery(req.Token)
 	if err != nil {
 		return c.Status(401).JSON(fiber.Map{"message": "Invalid or expired token"})
+	}
+
+	if !utils.IsSafe(req.NewPassword) {
+		return c.Status(400).JSON(fiber.Map{
+			"message": "Password must contain 8 characters, 1 uppercase & 1 lowercase letter, 1 number and 1 special character",
+		})
 	}
 
 	db, err := database.Connect()

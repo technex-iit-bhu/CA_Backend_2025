@@ -1,6 +1,6 @@
 package utils
 
-func GenerateOTPConnectionString(username string) string {
+func GenerateRecoveryToken(username string) string {
 	recoveryToken, _ := SerialiseRecovery(username)
 	return recoveryToken
 }
